@@ -1,0 +1,6 @@
+@font-face {
+  font-family: "Luckiest Guy"; /* cursive 제거 */
+  font-weight: 400; /* font-weight 설정 */
+  font-style: normal; /* font-style 설정 */
+  src: url("../assets/font/LuckiestGuy-Regular.woff") format("woff")
+}

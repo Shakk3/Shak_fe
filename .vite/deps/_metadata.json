@@ -1,0 +1,79 @@
+{
+  "hash": "093059bf",
+  "configHash": "1d4db4b5",
+  "lockfileHash": "a9422bc6",
+  "browserHash": "09ee2593",
+  "optimized": {
+    "react/jsx-dev-runtime": {
+      "src": "../../.yarn/cache/react-npm-18.3.1-af38f3c1ae-283e8c5efc.zip/node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "92ee17b0",
+      "needsInterop": true
+    },
+    "@tanstack/react-query": {
+      "src": "../../.yarn/__virtual__/@tanstack-react-query-virtual-e153eecf4e/0/cache/@tanstack-react-query-npm-5.59.0-4fd85dc5e2-035f1039a8.zip/node_modules/@tanstack/react-query/build/modern/index.js",
+      "file": "@tanstack_react-query.js",
+      "fileHash": "d25a6349",
+      "needsInterop": false
+    },
+    "@tanstack/react-query-devtools": {
+      "src": "../../.yarn/__virtual__/@tanstack-react-query-devtools-virtual-93536e5199/0/cache/@tanstack-react-query-devtools-npm-5.59.0-f20d0b12df-19e186faa6.zip/node_modules/@tanstack/react-query-devtools/build/modern/index.js",
+      "file": "@tanstack_react-query-devtools.js",
+      "fileHash": "0b1c1b66",
+      "needsInterop": false
+    },
+    "react-dom/client": {
+      "src": "../../.yarn/__virtual__/react-dom-virtual-059401898c/0/cache/react-dom-npm-18.3.1-a805663f38-a752496c19.zip/node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "1acf38fe",
+      "needsInterop": true
+    },
+    "react-router-dom": {
+      "src": "../../.yarn/__virtual__/react-router-dom-virtual-f5aad3af0c/0/cache/react-router-dom-npm-6.26.2-f8b4afffaf-7515128a98.zip/node_modules/react-router-dom/dist/index.js",
+      "file": "react-router-dom.js",
+      "fileHash": "ca60798e",
+      "needsInterop": false
+    },
+    "react/jsx-runtime": {
+      "src": "../../.yarn/cache/react-npm-18.3.1-af38f3c1ae-283e8c5efc.zip/node_modules/react/jsx-runtime.js",
+      "file": "react_jsx-runtime.js",
+      "fileHash": "6f2e1056",
+      "needsInterop": true
+    },
+    "styled-components": {
+      "src": "../../.yarn/__virtual__/styled-components-virtual-c154f7640a/0/cache/styled-components-npm-6.1.13-35e4f01254-dd0379179c.zip/node_modules/styled-components/dist/styled-components.browser.esm.js",
+      "file": "styled-components.js",
+      "fileHash": "fab7d704",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "XV5R7GGF-ND7LS6WO": {
+      "file": "XV5R7GGF-ND7LS6WO.js"
+    },
+    "chunk-O7O4EDS3": {
+      "file": "chunk-O7O4EDS3.js"
+    },
+    "chunk-2LVFBIP6": {
+      "file": "chunk-2LVFBIP6.js"
+    },
+    "chunk-6XGFB4O2": {
+      "file": "chunk-6XGFB4O2.js"
+    },
+    "chunk-5T2IAM43": {
+      "file": "chunk-5T2IAM43.js"
+    },
+    "H3J5RHJ6-GJGKSBDQ": {
+      "file": "H3J5RHJ6-GJGKSBDQ.js"
+    },
+    "chunk-QWFJE4KD": {
+      "file": "chunk-QWFJE4KD.js"
+    },
+    "chunk-XCNIYVNU": {
+      "file": "chunk-XCNIYVNU.js"
+    },
+    "chunk-QWN5BXRD": {
+      "file": "chunk-QWN5BXRD.js"
+    }
+  }
+}
