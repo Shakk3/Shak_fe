@@ -1,14 +1,18 @@
 import styled from "styled-components";
 import { Logo, InnerUpload } from "@/assets";
+import { UploadModal } from "@/components";
+import { useModalStore } from "@/store";
 
 export const Header = () => {
+  const openModal = useModalStore((state) => state.openModal);
   return (
     <HeaderContainer>
       <img src={Logo} alt="logo" />
       <ImgName>cat!</ImgName>
-      <UploadBtn>
+      <UploadBtn onClick={openModal}>
         <img src={InnerUpload} alt="" />
       </UploadBtn>
+      <UploadModal />
     </HeaderContainer>
   );
 };

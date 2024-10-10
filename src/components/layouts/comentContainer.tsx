@@ -1,11 +1,23 @@
 import styled from "styled-components";
 import { Coment } from "./coment";
+import { usePostNotice } from "@/apis";
+import { useParams } from "react-router-dom";
+import { useForm } from "@/hooks";
 
 interface Iprop {
   comentCount: number;
 }
 
 export const ComentContainer = ({ comentCount }: Iprop) => {
+  const params = useParams();
+  const { form, handleChange, setForm } = useForm({
+    nameValue: "",
+    commentValue: "",
+  });
+  const { mutate: postNoticeMutate, isPending } = usePostNotice({ img_id: +params.id!, comment_name: form.nameValue, comment_content: form.commentValue }, setForm);
+  const handleClear = () => {
+    setForm({ nameValue: "", commentValue: "" });
+  }
   return (
     <Container>
       <ComentCount>
@@ -14,14 +26,33 @@ export const ComentContainer = ({ comentCount }: Iprop) => {
         개
       </ComentCount>
       <form>
-        <NameInput placeholder="이름" />
+        <NameInput
+          placeholder="이름"
+          onChange={handleChange}
+          value={form.nameValue}
+          name="nameValue"
+        />
       </form>
       <form>
-        <ComentInput placeholder="댓글 작성..." />
+        <ComentInput
+          placeholder="댓글 작성..."
+          onChange={handleChange}
+          value={form.commentValue}
+          name="commentValue"
+        />
       </form>
       <EventBtn>
-        <CancleBtn>취소</CancleBtn>
-        <ComentBtn>댓글</ComentBtn>
+        <CancleBtn
+          onClick={() => {
+            if (!isPending) handleClear();
+          }}>
+          취소</CancleBtn>
+        <ComentBtn
+          onClick={() => {
+            if (!isPending) postNoticeMutate();
+          }}
+          disabled={isPending}>
+          댓글</ComentBtn>
       </EventBtn>
       <Coment />
     </Container >

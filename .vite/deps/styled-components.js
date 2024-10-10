@@ -1,10 +1,10 @@
 import {
   require_react
-} from "./chunk-5T2IAM43.js";
+} from "./chunk-KMFYYULC.js";
 import {
   __commonJS,
   __toESM
-} from "./chunk-QWN5BXRD.js";
+} from "./chunk-WOOG5QLI.js";
 
 // .yarn/cache/shallowequal-npm-1.1.0-6688d419cb-b926efb51c.zip/node_modules/shallowequal/index.js
 var require_shallowequal = __commonJS({
