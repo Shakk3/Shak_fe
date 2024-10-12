@@ -6,7 +6,7 @@ import { useModalStore } from "@/store";
 export const Header = () => {
   const openModal = useModalStore((state) => state.openModal);
   return (
-    <HeaderContainer>
+    <HeaderContainer >
       <img src={Logo} alt="logo" />
       <ImgName>cat!</ImgName>
       <UploadBtn onClick={openModal}>

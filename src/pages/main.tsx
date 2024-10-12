@@ -2,7 +2,6 @@ import styled, { css } from "styled-components";
 import { Header, MainContainer, ComentContainer } from "@/components";
 import { useModalStore } from "@/store";
 
-
 export const MainPage = () => {
   const isOpen = useModalStore((state) => state.isOpen);
 
@@ -18,11 +17,18 @@ export const MainPage = () => {
 const BackgroundContainer = styled.div<{ isOpen: boolean }>`
   background-color: #13171b;
   height: 400vh;
+  position: relative;
 
   ${({ isOpen }) =>
     isOpen &&
     css`
-      filter: blur(8px);
-      transition: filter 0.3s ease-in-out;
-    `}
+    &::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(5px);
+    transition: backdrop-filter 0.2s;
+    }
+  `}
 `;

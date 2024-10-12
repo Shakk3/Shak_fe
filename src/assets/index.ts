@@ -10,7 +10,10 @@ export { default as Embed } from "./img_embed.svg";
 export { default as Install } from "./img_install.svg";
 export { default as Installer } from "./img_installer.svg";
 export { default as Viewer } from "./img_viewer.svg";
-export { default as CloseModal } from "./close_modal.svg"
-export { default as ModalShak } from "./modal_shak.svg"
+export { default as CloseModal } from "./close_modal.svg";
+export { default as ModalShak } from "./modal_shak.svg";
+export { default as NotFoundImg } from "./404.svg";
+export { default as DragDrop } from "./drag_drop.svg";
+export { default as ImgUpload } from "./img_upload.svg"
 
 export { default as TestImg } from "./testImg.png";
