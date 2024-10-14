@@ -2,15 +2,18 @@ import styled, { css } from "styled-components";
 import { useModalStore, useDragImgStore } from "@/store";
 import { InnerUpload, CloseModal, Logo, ModalShak, DragDrop, ImgUpload } from "@/assets";
 import { useCallback, useRef, useState } from "react";
+import { useUploadFile } from "@/apis"
 
 export const UploadModal = () => {
   const { isActive, setActive } = useDragImgStore();
   const { isOpen, closeModal } = useModalStore();
   const [imgSrc, setImgSrc] = useState('');
   const [imgNaming, setImgNaming] = useState(false);
+  const mutation = useUploadFile();
 
   const handleImgNaming = () => {
     setImgNaming(true);
+
   };
 
   const encodeFileToBase64 = (fileBlob: Blob): Promise<void> => {
@@ -331,9 +334,9 @@ const UploadDiv = styled.div<{ imgNaming: boolean }>`
     `
     :
     css`
-  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.7))
-          drop-shadow(0 0 5px rgba(255, 255, 255, 0.4))
-          drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.7))
+            drop-shadow(0 0 5px rgba(255, 255, 255, 0.4))
+            drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
   `)
   }
 

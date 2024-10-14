@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { instance, NoticeRequest, NoticeResponse} from "@/apis";
 import toast from "react-hot-toast";
 
-const router = "/api/img";
+const router = "/api/img/random";
 
 export const useGetNotice = () => {
   return useQuery({
