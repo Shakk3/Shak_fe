@@ -7,44 +7,61 @@ import { useUploadFile } from "@/apis"
 export const UploadModal = () => {
   const { isActive, setActive } = useDragImgStore();
   const { isOpen, closeModal } = useModalStore();
-  const [imgSrc, setImgSrc] = useState('');
-  const [imgNaming, setImgNaming] = useState(false);
+  const [imgSrc, setImgSrc] = useState<string>('');
+  const [imgNaming, setImgNaming] = useState<boolean>(false);
+  const [imgName, setImgName] = useState<string>('');
+  const [selectedFile, setSelectedFile] = useState<File>();  // 파일 상태 추가
   const mutation = useUploadFile();
+
+  const handleImgUpload = useCallback(async (event: React.ChangeEvent<HTMLInputElement> | File) => {
+    let file: File;
+
+    if (event instanceof File) {
+      file = event;
+    } else if (event.target?.files && event.target.files.length > 0) {
+      file = event.target.files[0];
+    } else {
+      console.log("no file");
+      return;
+    }
+    // 파일을 선택하면 상태에 저장
+    setSelectedFile(file);
+    const base64String = await encodeFileToBase64(file);
+    setImgSrc(base64String);  // 미리 보여줄 이미지 상태
+  }, []);
 
   const handleImgNaming = () => {
     setImgNaming(true);
-
   };
 
-  const encodeFileToBase64 = (fileBlob: Blob): Promise<void> => {
-    const reader = new FileReader();
-    reader.readAsDataURL(fileBlob);
-    return new Promise<void>((resolve) => {
+  const encodeFileToBase64 = (fileBlob: Blob): Promise<string> => {
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(fileBlob);
       reader.onload = () => {
         const result = reader.result as string;
-        setImgSrc(result);
-        resolve();
+        resolve(result);
       };
+      reader.onerror = (error) => reject(error);
     });
   };
 
   const handleDragStart = () => {
-    setActive(true)
+    setActive(true);
     console.log("드래그 온!");
   };
+
   const handleDragEnd = () => {
-    setActive(false)
+    setActive(false);
     console.log("드래그 아웃!");
   };
 
   const handleDrop = (event: React.DragEvent<HTMLElement>) => {
     event.preventDefault();
-
     const file = event.dataTransfer.files[0];
-    console.log(file);
     setActive(false);
-
-    encodeFileToBase64(file);
+    handleImgUpload(file);  // 드래그 앤 드롭 시에도 handleImgUpload 호출
+    console.log(file);
   };
 
   const handleDragOver = (event: React.DragEvent<HTMLLabelElement>) => {
@@ -52,31 +69,42 @@ export const UploadModal = () => {
   };
 
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const onUploadImage = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || e.target.files.length === 0) {
-      return;
-    }
-
-    console.log(e.target.files[0]);
-    const file = e.target.files[0];
-    encodeFileToBase64(file);
-  }, [])
 
   const onUploadImageButtonClick = useCallback(() => {
-    if (!inputRef.current) {
-      return;
-    }
-    inputRef.current.click();
-  }, [])
+    inputRef.current?.click();
+  }, []);
 
   const cancelUpload = useCallback(() => {
     setImgSrc('');
+    setImgNaming(false);
     if (inputRef.current) {
       inputRef.current.value = '';
     }
   }, []);
 
-  // ? 이 코드는 모달의 상태가 열려있을 때 웹의 스크롤을 막는 코드입니다.
+  // 업로드 버튼 클릭 시
+  const handlePostImage = async () => {
+    if (!selectedFile) {
+      console.log("No file selected!");
+      return;
+    }
+
+    // FormData 객체에 file 추가
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+
+    try {
+      // selectedFile을 포함한 POST 요청
+      await mutation.mutateAsync({
+        file: selectedFile,  // file 객체 그대로 전달
+        imgName: imgName     // 추가 정보 imgName 전달
+      });
+    } catch (error) {
+      console.error("Upload failed:", error);
+    }
+  };
+
+
   if (isOpen) {
     document.body.style.overflow = 'hidden';
   } else {
@@ -84,6 +112,7 @@ export const UploadModal = () => {
   }
 
   if (!isOpen) return null;
+
   return (
     <ModalContainer>
       <HeaderContainer>
@@ -94,100 +123,106 @@ export const UploadModal = () => {
           </UploadBtn>
         </div>
         <Button src={CloseModal} alt="closeModal" onClick={closeModal} />
-      </HeaderContainer >
+      </HeaderContainer>
       <hr />
-      {
-        imgSrc ?
-          <>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "70%", gap: "40px" }}>
-              {imgNaming ?
-                <>
-                  <UploadDiv imgNaming={imgNaming}>
-                    <UploadImg imgNaming={imgNaming} src={imgSrc} alt="img" />
-                    <input type="text" placeholder="*제목을 입력해주세요." />
-                  </UploadDiv>
-                </>
-                :
+      {imgSrc ? (
+        <>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "70%", gap: "40px" }}>
+            {imgNaming ? (
+              <UploadDiv imgNaming={imgNaming}>
                 <UploadImg imgNaming={imgNaming} src={imgSrc} alt="img" />
-              }
-            </div>
-            <div style={{ display: "flex", gap: "20px", justifyContent: "center" }}>
-              <button style={{
-                borderRadius: "50px", cursor: "pointer", width: "4.525em", height: "2em", border: "none", color: "#ffffff", fontWeight: "bold", fontSize: "20px", background: "linear-gradient(to right, #9933FF, #6157FF)"
+                <input type="text" placeholder="*제목을 입력해주세요." onChange={(e) => setImgName(e.target.value)} />
+              </UploadDiv>
+            ) : (
+              <UploadImg imgNaming={imgNaming} src={imgSrc} alt="img" />
+            )}
+          </div>
+          <div style={{ display: "flex", gap: "20px", justifyContent: "center" }}>
+            <button
+              style={{
+                borderRadius: "50px",
+                cursor: "pointer",
+                width: "4.525em",
+                height: "2em",
+                border: "none",
+                color: "#ffffff",
+                fontWeight: "bold",
+                fontSize: "20px",
+                background: "linear-gradient(to right, #9933FF, #6157FF)",
               }}
-                onClick={() => {
-                  setActive(false);
-                  setImgNaming(false);
-                  cancelUpload();
-                  console.log("sadasd");
-                }}>취소</button>
-              {imgNaming ?
-                <NextBtn imgNaming={imgNaming} onClick={handleImgNaming}>
-                  <img src={ImgUpload} alt="으악" />
-                  <p>업로드</p>
-                </NextBtn>
-                :
-                <NextBtn imgNaming={imgNaming} onClick={handleImgNaming}>다음</NextBtn>}
+              onClick={cancelUpload}
+            >
+              취소
+            </button>
+            {imgNaming ? (
+              <NextBtn imgNaming={imgNaming} onClick={handlePostImage}>
+                <img src={ImgUpload} alt="업로드" />
+                <p>업로드</p>
+              </NextBtn>
+            ) : (
+              <NextBtn imgNaming={imgNaming} onClick={handleImgNaming}>다음</NextBtn>
+            )}
+          </div>
+        </>
+      ) : (
+        isActive ? (
+          <MainContainer>
+            <FinderContainer
+              onDragEnter={(e) => {
+                e.preventDefault();
+                handleDragStart();
+              }}
+              onDragLeave={(e) => {
+                e.preventDefault();
+                handleDragEnd();
+              }}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+            >
+              <input
+                type="file"
+                accept="image/*"
+                ref={inputRef}
+                onChange={handleImgUpload}
+                style={{ display: "none" }}
+              />
+              <img src={DragDrop} alt="dragdrop" style={{ width: "25%" }} />
+              <Text>이미지를 이곳에 드롭하세요.</Text>
+            </FinderContainer>
+          </MainContainer>
+        ) : (
+          <MainContainer>
+            <div
+              onDragEnter={(e) => {
+                e.preventDefault();
+                handleDragStart();
+              }}
+              onDragLeave={(e) => {
+                e.preventDefault();
+                handleDragEnd();
+              }}
+              onDrop={handleDrop}
+            >
+              <img src={ModalShak} alt="modalLogo" />
+              <input
+                type="file"
+                accept="image/*"
+                ref={inputRef}
+                onChange={handleImgUpload}
+                style={{ display: "none" }}
+              />
+              <Finder onClick={onUploadImageButtonClick}>
+                <p>찾아보기</p>
+              </Finder>
+              <span>또는 이미지를 드래그하세요.</span>
             </div>
-          </>
-          :
-          isActive ? (
-            <MainContainer>
-              <FinderContainer
-                onDragEnter={(e) => {
-                  e.preventDefault();
-                  handleDragStart();
-                }}
-                onDragLeave={(e) => {
-                  e.preventDefault();
-                  handleDragEnd();
-                }}
-                onDragOver={handleDragOver}
-                onDrop={handleDrop}
-              >
-                <input
-                  type="file"
-                  accept="image/*"
-                  ref={inputRef}
-                  onChange={onUploadImage}
-                  style={{ display: "none" }}
-                />
-                <img src={DragDrop} alt="dragdrop" style={{ width: "25%" }} />
-                <Text>이미지를 이곳에 드롭하세요.</Text>
-              </FinderContainer>
-            </MainContainer>
-          ) : (
-            <MainContainer>
-              <div
-                onDragEnter={(e) => {
-                  e.preventDefault();
-                  handleDragStart();
-                }}
-                onDragLeave={(e) => {
-                  e.preventDefault();
-                  handleDragEnd();
-                }}
-                onDrop={handleDrop}>
-                <img src={ModalShak} alt="modalLogo" />
-                <input
-                  type="file"
-                  accept="image/*"
-                  ref={inputRef}
-                  onChange={onUploadImage}
-                  style={{ display: "none" }}
-                />
-                <Finder
-                  onClick={onUploadImageButtonClick}
-                >
-                  <p>찾아보기</p>
-                </Finder>
-                <span>또는 이미지를 드래그하세요.</span>
-              </div>
-            </MainContainer>
-          )}
-    </ModalContainer >
+          </MainContainer>
+        )
+      )}
+    </ModalContainer>
   );
 };
+
 
 const ModalContainer = styled.div`
   position: fixed;

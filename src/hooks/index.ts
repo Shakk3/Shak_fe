@@ -1,5 +1,4 @@
 import { useState, type ChangeEvent } from "react";
-import { useMutation } from "@tanstack/react-query";
 
 /** 여러개의 input 상태를 관리하는 hook입니다.*/
 export function useForm<T>(initialState: T) {

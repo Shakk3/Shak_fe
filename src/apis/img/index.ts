@@ -1,17 +1,21 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, UseMutationResult } from "@tanstack/react-query";
 import { instance } from "@/apis";
 
 const router = "/uploadfile/";
 
-const uploadFile = async ({ file, binaryString }: { file: File; binaryString: string }) => {
-  const requestBody = {
-    file: file,
-    binary: binaryString,
-  };
+interface UploadFileVariables {
+  file: File;
+}
 
-  const response = await instance.post(router, requestBody, {
+export const uploadFile = async (file: File) => {
+  // FormData 생성
+  const formData = new FormData();
+  formData.append("file", file);  // 파일 추가
+
+  // FormData를 전송
+  const response = await instance.post(router, formData, {
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "multipart/form-data",
     },
   });
 
@@ -19,6 +23,8 @@ const uploadFile = async ({ file, binaryString }: { file: File; binaryString: st
 };
 
 /** react-query로 파일 업로드 요청하는 훅입니다. */
-const useUploadFile = () => {
-  return useMutation(uploadFile);
+export const useUploadFile = (): UseMutationResult<any, Error, UploadFileVariables> => {
+  return useMutation({
+    mutationFn: ({ file }: UploadFileVariables) => uploadFile(file)
+  });
 };
